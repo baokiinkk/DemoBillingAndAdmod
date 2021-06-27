@@ -1,4 +1,4 @@
-package com.example.demobillingandadmod
+package com.baokiin.demobillingandadmod
 
 import org.junit.Test
 

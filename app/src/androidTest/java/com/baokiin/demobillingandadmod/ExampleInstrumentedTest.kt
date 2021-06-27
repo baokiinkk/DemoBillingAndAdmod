@@ -1,4 +1,4 @@
-package com.example.demobillingandadmod
+package com.baokiin.demobillingandadmod
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

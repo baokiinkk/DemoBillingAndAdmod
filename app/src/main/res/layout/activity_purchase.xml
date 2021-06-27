@@ -17,10 +17,10 @@
         />
 
     <Button
-        android:id="@+id/purchase_button"
+        android:id="@+id/btnLoad"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Purchase vip"
+        android:text="Load"
         />
 </LinearLayout>
