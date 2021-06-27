@@ -1,9 +1,10 @@
-package com.baokiin.demobillingandadmod
+package com.baokiin.demobillingandadmod.ui
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.cardview.widget.CardView
+import com.baokiin.demobillingandadmod.R
 
 class SignVipActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -11,7 +12,7 @@ class SignVipActivity : AppCompatActivity() {
         setContentView(R.layout.activity_sign_vip)
 
         findViewById<CardView>(R.id.CardPurchase).setOnClickListener {
-            startActivity(Intent(this,PurchaseActivity::class.java))
+            startActivity(Intent(this, PurchaseActivity::class.java))
         }
     }
 }

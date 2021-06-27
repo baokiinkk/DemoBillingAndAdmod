@@ -1,4 +1,4 @@
-package com.baokiin.demobillingandadmod
+package com.baokiin.demobillingandadmod.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,7 +6,7 @@ import android.util.Log
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.android.billingclient.api.*
-import com.android.billingclient.api.BillingClient.SkuType
+import com.baokiin.demobillingandadmod.R
 
 
 class MainActivity : AppCompatActivity() {
@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
 
 
         findViewById<Button>(R.id.purchase_button).setOnClickListener {
-            startActivity(Intent(this,SignVipActivity::class.java))
+            startActivity(Intent(this, SignVipActivity::class.java))
         }
 
 
