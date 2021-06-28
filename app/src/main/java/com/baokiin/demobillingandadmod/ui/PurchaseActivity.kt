@@ -15,7 +15,6 @@ import com.baokiin.demobillingandadmod.adapter.ItemPurchasesAdapter
 
 class PurchaseActivity : AppCompatActivity() {
     private lateinit var billingClient: BillingClient
-    private lateinit var listener: ConsumeResponseListener
     private lateinit var adapterPurchase: ItemPurchasesAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,8 +29,8 @@ class PurchaseActivity : AppCompatActivity() {
     }
     private  fun querySkuDetails(){
         val skuList: MutableList<String> = ArrayList()
-        skuList.add("admod")
-        skuList.add("jetwel_of_time")
+        skuList.add("vinh_vien")
+        skuList.add("1_lan")
         val params = SkuDetailsParams.newBuilder()
         params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP)
         billingClient.querySkuDetailsAsync(
@@ -97,33 +96,17 @@ class PurchaseActivity : AppCompatActivity() {
                     }
                 }
             }
-        listener = ConsumeResponseListener { billingResult, s ->
-            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-            }
-        }
         billingClient = BillingClient.newBuilder(this)
             .setListener(purchasesUpdatedListener)
             .enablePendingPurchases()
             .build()
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
-                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                    billingClient.queryPurchasesAsync(BillingClient.SkuType.INAPP){_,list->
-                        handItemAlreadyPurches(list)
-                    }
-                }
-                else{
-                    Log.d("quocbao","LOI")
-                }
-            }
 
+            }
             override fun onBillingServiceDisconnected() {
                 Log.d("quocbao","Disconnected")
             }
         })
-    }
-
-    private fun handItemAlreadyPurches(list: List<Purchase>) {
-
     }
 }

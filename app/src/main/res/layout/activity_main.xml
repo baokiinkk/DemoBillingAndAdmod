@@ -6,15 +6,20 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
-
-    <TextView
-        android:id="@+id/purchase_status"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:gravity="center"
+        >
+        <TextView
+            android:id="@+id/txtPurchase"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="20sp"
+            android:gravity="center"
 
-        />
+            />
+    </androidx.core.widget.NestedScrollView>
 
     <Button
         android:id="@+id/purchase_button"
@@ -23,4 +28,5 @@
         android:gravity="center"
         android:text="Purchase vip"
         />
+
 </LinearLayout>
