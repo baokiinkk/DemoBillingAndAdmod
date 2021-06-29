@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.android.billingclient.api.SkuDetails
 import com.baokiin.demobillingandadmod.R
-import com.baokiin.demobillingandadmod.model.Purchase
 
 class ItemPurchasesAdapter(private val onClick: (SkuDetails) -> Unit) :
     ListAdapter<SkuDetails, ItemPurchasesAdapter.ViewHolder>(

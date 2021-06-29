@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "147402881209",
+    "project_id": "demobillingandadmod",
+    "storage_bucket": "demobillingandadmod.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:147402881209:android:7483dc8f186d4d9993c368",
+        "android_client_info": {
+          "package_name": "com.baokiin.demobillingandadmod"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "147402881209-9ckb0adq4a39k709k97c6kk8ju85l99u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDb8uf5NSAVZYhuVK8VxMST01nHEizR798"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "147402881209-9ckb0adq4a39k709k97c6kk8ju85l99u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
