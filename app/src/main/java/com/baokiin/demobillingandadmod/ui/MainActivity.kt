@@ -15,7 +15,10 @@ import com.baokiin.demobillingandadmod.R
 class MainActivity : AppCompatActivity() {
     private lateinit var billingClient: BillingClient
     private lateinit var listener: ConsumeResponseListener
-    val isReady = MutableLiveData<String?>(null)
+    private lateinit var listenerSubs: AcknowledgePurchaseResponseListener
+    val isReadyPurchase = MutableLiveData<String?>(null)
+    val isReadyPurchaseVip = MutableLiveData<String?>(null)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -23,15 +26,24 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.purchase_button).setOnClickListener {
             startActivity(Intent(this, SignVipActivity::class.java))
         }
-        isReady.observe(this, Observer {
+        //load purchased
+        isReadyPurchase.observe(this, Observer {
             it?.let {
                 findViewById<TextView>(R.id.txtPurchase).text = it
-                isReady.postValue(null)
+                isReadyPurchase.postValue(null)
+            }
+        })
+        //load vip
+        isReadyPurchaseVip.observe(this, Observer {
+            it?.let {
+                findViewById<TextView>(R.id.txtSubs).text = it
+                isReadyPurchaseVip.postValue(null)
             }
         })
     }
 
     fun setupBillingClient() {
+
         val purchasesUpdatedListener =
             PurchasesUpdatedListener { billingResult, purchases ->
                 if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK
@@ -40,6 +52,8 @@ class MainActivity : AppCompatActivity() {
                     handItemAlreadyPurches(purchases)
                 }
             }
+
+        // purchase listener setup
         listener = ConsumeResponseListener { billingResult, s ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
             }
@@ -48,10 +62,20 @@ class MainActivity : AppCompatActivity() {
             .setListener(purchasesUpdatedListener)
             .enablePendingPurchases()
             .build()
+
+        // purchaseVIP listener
+        listenerSubs = AcknowledgePurchaseResponseListener {
+            if (it.responseCode == BillingClient.BillingResponseCode.OK) {
+            }
+        }
+
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                     billingClient.queryPurchasesAsync(BillingClient.SkuType.INAPP) { _, list ->
+                        handItemAlreadyPurches(list)
+                    }
+                    billingClient.queryPurchasesAsync(BillingClient.SkuType.SUBS) { _, list ->
                         handItemAlreadyPurches(list)
                     }
                 } else {
@@ -66,9 +90,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handItemAlreadyPurches(list: List<Purchase>) {
-        Log.d("quocbao", list.toString())
         var text=""
         list.forEach {
+            if(it.purchaseState == Purchase.PurchaseState.PURCHASED){
+                if(!it.isAcknowledged){
+                    val acknowLedgedParam = AcknowledgePurchaseParams.newBuilder()
+                        .setPurchaseToken(it.purchaseToken)
+                        .build()
+                    billingClient.acknowledgePurchase(acknowLedgedParam,listenerSubs)
+                }
+                else{
+                    isReadyPurchaseVip.postValue("VIP")
+                }
+            }
             if(it.skus[0] == "1_lan"){
                 val consumeParams = ConsumeParams.newBuilder()
                     .setPurchaseToken(it.purchaseToken)
@@ -77,8 +111,7 @@ class MainActivity : AppCompatActivity() {
             }
             text += it.skus[0]+"\n"
         }
-        isReady.postValue(text)
+        isReadyPurchase.postValue(text)
     }
-
 
 }

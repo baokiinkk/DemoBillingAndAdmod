@@ -12,7 +12,14 @@ class SignVipActivity : AppCompatActivity() {
         setContentView(R.layout.activity_sign_vip)
 
         findViewById<CardView>(R.id.CardPurchase).setOnClickListener {
-            startActivity(Intent(this, PurchaseActivity::class.java))
+            val intent =  Intent(this, PurchaseActivity::class.java)
+            intent.putExtra("category","inapp")
+            startActivity(intent)
+        }
+        findViewById<CardView>(R.id.CardSubscribe).setOnClickListener {
+            val intent =  Intent(this, PurchaseActivity::class.java)
+            intent.putExtra("category","subrcribe")
+            startActivity(intent)
         }
     }
 }

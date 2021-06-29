@@ -4,29 +4,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
-    <androidx.core.widget.NestedScrollView
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/txtPurchase"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        >
-        <TextView
-            android:id="@+id/txtPurchase"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textSize="20sp"
-            android:gravity="center"
+        android:gravity="center"
+        android:textSize="20sp"
 
-            />
-    </androidx.core.widget.NestedScrollView>
+        />
+
+    <TextView
+        android:id="@+id/txtSubs"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textSize="20sp"
+
+        />
 
     <Button
         android:id="@+id/purchase_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Purchase vip"
-        />
+        android:text="Purchase vip" />
 
 </LinearLayout>

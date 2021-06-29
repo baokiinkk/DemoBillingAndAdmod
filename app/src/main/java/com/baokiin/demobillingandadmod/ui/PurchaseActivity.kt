@@ -16,12 +16,13 @@ import com.baokiin.demobillingandadmod.adapter.ItemPurchasesAdapter
 class PurchaseActivity : AppCompatActivity() {
     private lateinit var billingClient: BillingClient
     private lateinit var adapterPurchase: ItemPurchasesAdapter
+    var category = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_purchase)
         initRecycleView()
         setupBillingClient()
-
+        category = intent.getStringExtra("category").toString()
         findViewById<Button>(R.id.btnLoad).setOnClickListener {
             if(billingClient.isReady)
                 querySkuDetails()
@@ -32,7 +33,10 @@ class PurchaseActivity : AppCompatActivity() {
         skuList.add("vinh_vien")
         skuList.add("1_lan")
         val params = SkuDetailsParams.newBuilder()
-        params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP)
+        if(category == "inapp")
+            params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP)
+        else
+            params.setSkusList(arrayListOf("vip")).setType(BillingClient.SkuType.SUBS)
         billingClient.querySkuDetailsAsync(
             params.build()
         ) { billingResult, skuDetailsList ->
