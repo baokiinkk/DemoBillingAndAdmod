@@ -4,6 +4,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <Button
+        android:id="@+id/purchase_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:text="Purchase vip" />
+
     <TextView
         android:id="@+id/txtPurchase"
         android:layout_width="match_parent"
@@ -23,25 +30,23 @@
         android:textSize="20sp"
 
         />
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycleViewMainActivity"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="8"
-        />
-    <com.google.android.gms.ads.AdView
-        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:layout_weight="8" />
+
+    <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
         android:id="@+id/adView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         ads:adSize="BANNER"
-        ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
-    </com.google.android.gms.ads.AdView>
-    <Button
-        android:id="@+id/purchase_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Purchase vip" />
+        ads:adUnitId="ca-app-pub-3940256099942544/6300978111" />
 
+    <Button
+        android:id="@+id/purchase"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </LinearLayout>

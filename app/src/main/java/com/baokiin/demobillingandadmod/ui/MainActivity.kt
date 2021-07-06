@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.billingclient.api.*
 import com.baokiin.demobillingandadmod.R
 import com.baokiin.demobillingandadmod.adapter.ItemMainScreenAdapter
+import com.baokiin.demobillingandadmod.manager.AdsManager
+import com.baokiin.demobillingandadmod.manager.BillingManager
 import com.baokiin.demobillingandadmod.model.Data
 import com.baokiin.demobillingandadmod.ui.Utils.TAG
 import com.baokiin.demobillingandadmod.ui.Utils.VINHVIEN
@@ -22,9 +24,10 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 
 
-class MainActivity : AppCompatActivity() {
-    private lateinit var billingClient: BillingClient
+class MainActivity : AppCompatActivity(),BillingManager.BillingManagerCallbacks,AdsManager.AdsManagerCallback {
     private lateinit var adapterMainScreenAdapter: ItemMainScreenAdapter
+    private lateinit var billingManager: BillingManager
+    private lateinit var adsManager: AdsManager
     private var mInterstitialAd: InterstitialAd? = null
     val isReadyPurchase = MutableLiveData<String?>(null)
     val isReadyPurchaseVip = MutableLiveData<String?>(null)
@@ -33,20 +36,17 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setupBillingClient()
-        setupAdmod(findViewById(R.id.adView))
+        billingManager = BillingManager(this,this)
+        billingManager.startService()
+
+        adsManager = AdsManager(this,this)
+        adsManager.setup()
         initRecycleView()
         loadData()
 
         category = intent.getStringExtra(Utils.CATEGORY)
         findViewById<Button>(R.id.purchase_button).setOnClickListener {
-            if (mInterstitialAd != null) {
-                startActivity(Intent(this, SignVipActivity::class.java))
-                mInterstitialAd?.show(this)
-
-            } else {
-                Log.d("TAG", "The interstitial ad wasn't ready yet.")
-            }
+           adsManager.showAdsInterstitial()
         }
         //load purchased
         isReadyPurchase.observe(this, Observer {
@@ -67,93 +67,33 @@ class MainActivity : AppCompatActivity() {
     private fun loadData() {
         val data = mutableListOf<Data>()
         for (i in 0..20) {
-            data.add(Data("quocbao $i", "${1000 * i}"))
+            data.add(Data("quocbao $i", "${1000 * i}",false))
         }
         adapterMainScreenAdapter.submitList(data)
     }
-
-    fun setupAdmod(view: AdView) {
-        MobileAds.initialize(this) {}
-        val adRequest = AdRequest.Builder().build()
-        view.loadAd(adRequest)
-        loadAdmod()
-        mInterstitialAd?.fullScreenContentCallback = object: FullScreenContentCallback() {
-            override fun onAdDismissedFullScreenContent() {
-                Log.d(TAG, "Ad was dismissed.")
+    private fun initRecycleView() {
+        adapterMainScreenAdapter = ItemMainScreenAdapter {
+            findViewById<Button>(R.id.purchase).apply {
+                text = "Total:$it"
             }
-
-            override fun onAdFailedToShowFullScreenContent(adError: AdError?) {
-                Log.d(TAG, "Ad failed to show.")
-
-            }
-
-            override fun onAdShowedFullScreenContent() {
-                Log.d(TAG, "Ad showed fullscreen content.")
-                mInterstitialAd = null;
-            }
+        }
+        findViewById<RecyclerView>(R.id.recycleViewMainActivity).apply {
+            layoutManager = LinearLayoutManager(
+                this@MainActivity,
+                LinearLayoutManager.VERTICAL, false
+            )
+            adapter = adapterMainScreenAdapter
         }
     }
 
-    fun loadAdmod(){
-        val adRequest = AdRequest.Builder().build()
-        InterstitialAd.load(this,"ca-app-pub-3940256099942544/1033173712", adRequest, object : InterstitialAdLoadCallback() {
-            override fun onAdFailedToLoad(adError: LoadAdError) {
-                Log.d(TAG, adError?.message)
-                mInterstitialAd = null
-            }
-
-            override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                mInterstitialAd = interstitialAd
-                loadAdmod()
-            }
-        })
-    }
-
-    fun setupBillingClient() {
-
-        val purchasesUpdatedListener =
-            PurchasesUpdatedListener { billingResult, purchases ->
-                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK
-                    && purchases != null
-                ) {
-                    handItemAlreadyPurches(purchases)
-                }
-            }
-
-        billingClient = BillingClient.newBuilder(this)
-            .setListener(purchasesUpdatedListener)
-            .enablePendingPurchases()
-            .build()
-
-
-        billingClient.startConnection(object : BillingClientStateListener {
-            override fun onBillingSetupFinished(billingResult: BillingResult) {
-                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                    billingClient.queryPurchasesAsync(BillingClient.SkuType.INAPP) { _, list ->
-                        handItemAlreadyPurches(list)
-                    }
-                    billingClient.queryPurchasesAsync(BillingClient.SkuType.SUBS) { _, list ->
-                        handItemAlreadyPurches(list)
-                    }
-                } else {
-                    Log.d("quocbao", "ERROR")
-                }
-            }
-
-            override fun onBillingServiceDisconnected() {
-                Log.d("quocbao", "Disconnected")
-            }
-        })
-    }
-
-    private fun handItemAlreadyPurches(list: List<Purchase>) {
+    override fun handItemAlreadyPurchesCallback(listSkuDetails: MutableList<Purchase>) {
         var text = ""
-        list.forEach {
+        listSkuDetails.forEach {
             if (it.purchaseState == Purchase.PurchaseState.PURCHASED) {
                 if (it.isAcknowledged && it.skus[0] != VINHVIEN)
                     isReadyPurchaseVip.postValue(VIP)
 
-                    text += it.skus[0] + "\n"
+                text += it.skus[0] + "\n"
             }
 
         }
@@ -163,16 +103,12 @@ class MainActivity : AppCompatActivity() {
         isReadyPurchase.postValue(text)
     }
 
-    private fun initRecycleView() {
-        adapterMainScreenAdapter = ItemMainScreenAdapter {
-        }
-        findViewById<RecyclerView>(R.id.recycleViewMainActivity).apply {
-            layoutManager = LinearLayoutManager(
-                this@MainActivity,
-                LinearLayoutManager.VERTICAL, false
-            )
-            adapter = adapterMainScreenAdapter
-        }
+    override fun loadAdsCallback(adRequest: AdRequest) {
+        findViewById<AdView>(R.id.adView).loadAd(adRequest)
+    }
+
+    override fun startActivityCallback() {
+        startActivity(Intent(this,SignVipActivity::class.java))
     }
 
 }

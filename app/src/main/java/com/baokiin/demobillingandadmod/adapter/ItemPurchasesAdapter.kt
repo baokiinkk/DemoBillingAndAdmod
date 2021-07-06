@@ -31,6 +31,7 @@ class ItemPurchasesAdapter(private val onClick: (SkuDetails) -> Unit) :
             itemView.setOnClickListener {
                 if (onClick != null) {
                     onClick(item)
+
                 }
             }
             itemView.findViewById<TextView>(R.id.txtTitle).text = item.title
