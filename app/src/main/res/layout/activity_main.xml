@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <Button
@@ -21,16 +22,17 @@
 
         />
 
-    <TextView
-        android:id="@+id/txtSubs"
+    <com.google.android.ads.nativetemplates.TemplateView
+        android:id="@+id/my_template"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:textSize="20sp"
-
+        android:layout_height="wrap_content"
+        app:gnt_template_type="@layout/gnt_small_template_view"
         />
-
+    <FrameLayout
+        android:id="@+id/ad_frame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycleViewMainActivity"

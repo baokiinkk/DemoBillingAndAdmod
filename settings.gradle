@@ -1,2 +1,4 @@
 rootProject.name = "DemoBillingAndAdmod"
 include ':app'
+
+include ':nativetemplates'

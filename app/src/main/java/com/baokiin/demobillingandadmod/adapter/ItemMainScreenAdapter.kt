@@ -16,7 +16,7 @@ import com.baokiin.demobillingandadmod.R
 import com.baokiin.demobillingandadmod.model.Data
 
 
-class ItemMainScreenAdapter(private val onClick: (Int) -> Unit) :
+class ItemMainScreenAdapter(var subs:Boolean, private val onClick: (Int) -> Unit) :
     ListAdapter<Data, ItemMainScreenAdapter.ViewHolder>(
         MainDIff()
     ) {
@@ -25,14 +25,14 @@ class ItemMainScreenAdapter(private val onClick: (Int) -> Unit) :
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
                 var view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_purchase, parent, false)
+                    .inflate(R.layout.item_main, parent, false)
                 return ViewHolder(
                     view
                 )
             }
         }
 
-        fun bind(item: Data, onClick: ((Int) -> Unit)? = null, list: MutableList<Data>) {
+        fun bind(item: Data, onClick: ((Int) -> Unit)? = null, list: MutableList<Data>,subs: Boolean) {
 
             if (itemViewType == 0) {
                 itemView.setOnClickListener {
@@ -43,7 +43,7 @@ class ItemMainScreenAdapter(private val onClick: (Int) -> Unit) :
                         list.filter {
                             it.state
                         }.forEach {
-                            total += it.price.toInt()
+                            total += if(subs) it.price.toInt()/2 else it.price.toInt()
                         }
                         onClick(total)
                     }
@@ -51,7 +51,11 @@ class ItemMainScreenAdapter(private val onClick: (Int) -> Unit) :
                 itemView.setBackgroundColor(if (item.state) Color.GREEN else Color.WHITE)
                 itemView.findViewById<TextView>(R.id.txtTitle).text = item.name
                 itemView.findViewById<TextView>(R.id.txtPrice).apply{
+                    text = if(subs) "${item.price.toInt()/2}" else item.price
+                }
+                itemView.findViewById<TextView>(R.id.txtPriceDown).apply {
                     text = item.price
+                    visibility =if(subs) View.VISIBLE else View.GONE
                 }
             }
 
@@ -66,7 +70,7 @@ class ItemMainScreenAdapter(private val onClick: (Int) -> Unit) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        getItem(position)?.let { holder.bind(it, onClick, currentList) }
+        getItem(position)?.let { holder.bind(it, onClick, currentList,subs) }
     }
 
 }

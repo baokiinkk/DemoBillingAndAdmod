@@ -5,6 +5,8 @@ import android.util.Log
 import android.widget.Toast
 import com.android.billingclient.api.*
 import com.baokiin.demobillingandadmod.ui.Utils
+import com.baokiin.demobillingandadmod.ui.Utils.INAPP
+import com.baokiin.demobillingandadmod.ui.Utils.VIPID
 
 class BillingManager(val mCallbacks: BillingManagerCallbacks, val context: Activity) {
     private lateinit var listener: ConsumeResponseListener
@@ -50,14 +52,15 @@ class BillingManager(val mCallbacks: BillingManagerCallbacks, val context: Activ
             .setListener(purchasesUpdatedListener)
             .enablePendingPurchases()
             .build()
+
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                     billingClient.queryPurchasesAsync(BillingClient.SkuType.INAPP) { _, list ->
-                        mCallbacks.handItemAlreadyPurchesCallback(list)
+                        mCallbacks.handItemAlreadyPurchesCallback(list,INAPP)
                     }
                     billingClient.queryPurchasesAsync(BillingClient.SkuType.SUBS) { _, list ->
-                        mCallbacks.handItemAlreadyPurchesCallback(list)
+                        mCallbacks.handItemAlreadyPurchesCallback(list,VIPID)
                     }
                 } else {
                     Log.d("quocbao", "ERROR")
@@ -119,7 +122,6 @@ class BillingManager(val mCallbacks: BillingManagerCallbacks, val context: Activ
             billingClient.querySkuDetailsAsync(
                 params.build()
             ) { billingResult, skuDetailsList ->
-                Log.d("quocbao", "aaaaaaaaaaaaaaaaaaaaaaaa")
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                     if (skuDetailsList != null) {
                         mCallbacks.getSkuDetailsCallback(skuDetailsList)
@@ -148,7 +150,7 @@ class BillingManager(val mCallbacks: BillingManagerCallbacks, val context: Activ
     interface BillingManagerCallbacks {
         fun acknowledgeSuccessCallback(){}
         fun consumeSuccessCallback(){}
-        fun handItemAlreadyPurchesCallback(listSkuDetails: MutableList<Purchase>){}
+        fun handItemAlreadyPurchesCallback(listSkuDetails: MutableList<Purchase>,categorys: String){}
         fun getSkuDetailsCallback(listSkuDetails: MutableList<SkuDetails>){}
     }
 }
