@@ -42,7 +42,10 @@ class PurchaseActivity : AppCompatActivity(), BillingManager.BillingManagerCallb
         }
     }
 
-
+    override fun onDestroy() {
+        super.onDestroy()
+        billingManager.stopService()
+    }
     override fun acknowledgeSuccessCallback() {
         startActivity(Intent(this, MainActivity::class.java))
     }

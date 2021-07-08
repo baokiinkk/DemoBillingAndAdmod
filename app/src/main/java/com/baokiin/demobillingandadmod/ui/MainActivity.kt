@@ -75,6 +75,11 @@ class MainActivity : AppCompatActivity(), BillingManager.BillingManagerCallbacks
         })
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        billingManager.stopService()
+    }
+
     override fun loadAdsCallback(adRequest: AdRequest) {
         findViewById<AdView>(R.id.adView).loadAd(adRequest)
     }
@@ -209,8 +214,6 @@ class MainActivity : AppCompatActivity(), BillingManager.BillingManagerCallbacks
             }
 
         }
-        if (!checkVip && categorys == VIPID)
-            Log.d("quocbao", "aaaaaaaaaaaaaaaaaaaaa")
         category?.let {
             text += it + "\n"
         }
